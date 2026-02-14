@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SH 工作班時刻表 PDF 查詢</title>
+
+<style>
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 16px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+input, button {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  margin-top: 8px;
+}
+
+button {
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.notice {
+  text-align: center;
+  margin-top: 10px;
+  color: #b91c1c;
+}
+
+.viewer {
+  margin-top: 20px;
+  width: 100%;
+  height: 75vh;
+  border: 1px solid #999;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>🚆 SH 工作班時刻表</h1>
+  <div class="subtitle">南新竹機務分駐所｜PDF 查詢系統</div>
+
+  <input id="shiftInput" placeholder="請輸入工作班（例如：C31、C59V、CR4）" />
+  <button onclick="searchPDF()">查詢時刻表</button>
+
+  <div class="notice" id="notice"></div>
+
+  <iframe id="pdfViewer" class="viewer" style="display:none;"></iframe>
+</div>
+
+<script>
+/**
+ * 工作班 → Google Drive PDF ID 對照表（已全部補齊）
+ */
+const pdfMap = {
+  "CR4": "1NN30zlg0LUmwPK8_IKbitGyRhgpZ-atb",
+  "C61": "13GnGIB1nUv9bA5HedB3FwaNkESDANH9c",
+  "C60": "1zL5EiwB5OjumdMZxa9zE6yLiTHwkretV",
+  "C59V": "1iFSb0GWdSdHz2rDdwLpEz3PMul2aZnBy",
+  "C59": "1yJAGfG7khMlsNkKcXHFvLRnjuXSQlcK5",
+  "C58A": "1KmxzahHUYAI_yuVsevaV7G0GeIU7M2WD",
+  "C58": "1GWuGXAiOuYJIudy66TkrrG61G4alaVNO",
+  "C57A": "1XkX5Hn59sjp68qUtCVwcrx6XrS3tbnem",
+  "C57": "1XYLNbj5hwUdZkLj88shuIeaKVbhsYQnp",
+  "C56": "1x8MExc09dUeul12IWd6LBZ4Z5f-_YY-g",
+  "C55V": "1hbKAkQiqQk2v9CePvZ-3pEfqsT4L-Ico",
+  "C55": "1HTnTugf2QsrOwdHM0VW800arXvjan94P",
+  "C54V": "1eOaz54uoqICBG_sR5lt1J4iVJEQOSBKB",
+  "C54": "1Umf9RtUuMedMI5RLrgveQE8EKowLeXHo",
+  "C53V": "1kQJqczgteVIVyegkQPAl35gTv214_tcl",
+  "C53": "1swVQMoucE1ycmpZqL3w0kobSzopxCdlf",
+  "C52": "1jvW-Lc4E6MFMGQxes1AlWWWZ9vXr-3HE",
+  "C51": "19ZXMkVnp0p5VH2hiiu_-bAp5uE1RzLdF",
+  "C59(1-5)": "1Z7ja01xj87ImnPHb6Hq9Szu5m0UN3IjT",
+  "C42": "1CZm51gSb5zHfiw8aocUSBpH63C_HB3gp",
+  "C31": "1dVZyKF41Wu2VY4uNhs92_8LMqrocyS8V"
+};
+
+function searchPDF() {
+  const input = document.getElementById("shiftInput").value.trim().toUpperCase();
+  const notice = document.getElementById("notice");
+  const viewer = document.getElementById("pdfViewer");
+
+  notice.innerText = "";
+  viewer.style.display = "none";
+
+  if (!pdfMap[input]) {
+    notice.innerText = `❌ 查無工作班「${input}」的 PDF 時刻表`;
+    return;
+  }
+
+  viewer.src = `https://drive.google.com/file/d/${pdfMap[input]}/preview`;
+  viewer.style.display = "block";
+}
+</script>
+</body>
+</html>
